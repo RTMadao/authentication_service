@@ -1,6 +1,6 @@
 package com.RTM.services.authentication.web.security;
 
-import com.RTM.services.authentication.domain.service.TestUserDetailsService;
+import com.RTM.services.authentication.domain.service.UserDetailsService;
 import com.RTM.services.authentication.web.security.filter.JWTFilterRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -22,7 +22,7 @@ import java.util.Arrays;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
-    private TestUserDetailsService testUserDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Autowired
     private JWTFilterRequest jwtFilterRequest;
@@ -35,13 +35,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(testUserDetailsService).passwordEncoder(passwordEncoder());
+        auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable().authorizeRequests()
                 .antMatchers("/**/authenticate/**/").permitAll()
+                .antMatchers("/**/encode_user/**/").permitAll()
                 .anyRequest().authenticated()
                 .and().cors()
                 .and().sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);

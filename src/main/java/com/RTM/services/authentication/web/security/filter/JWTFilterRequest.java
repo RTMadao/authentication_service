@@ -1,6 +1,6 @@
 package com.RTM.services.authentication.web.security.filter;
 
-import com.RTM.services.authentication.domain.service.TestUserDetailsService;
+import com.RTM.services.authentication.domain.service.UserDetailsService;
 import com.RTM.services.authentication.web.security.JWTUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -22,7 +22,7 @@ public class JWTFilterRequest extends OncePerRequestFilter {
     @Autowired
     private JWTUtil jwtUtil;
     @Autowired
-    private TestUserDetailsService testUserDetailsService;
+    private UserDetailsService userDetailsService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
@@ -33,7 +33,7 @@ public class JWTFilterRequest extends OncePerRequestFilter {
             String username = jwtUtil.extractUsername(jwt);
 
             if(username != null && SecurityContextHolder.getContext().getAuthentication() == null){
-                UserDetails userDetails = testUserDetailsService.loadUserByUsername(username);
+                UserDetails userDetails = userDetailsService.loadUserByUsername(username);
 
                 if (jwtUtil.validateToken(jwt,userDetails)) {
                     UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());

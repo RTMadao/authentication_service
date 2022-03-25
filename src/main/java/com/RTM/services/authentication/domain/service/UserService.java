@@ -19,6 +19,10 @@ public class UserService {
     @Autowired
     private UserRepository userRepository;
 
+    public String encodeUserPassword(String pass) {
+        return passwordEncoder.encode(pass);
+    }
+
     public List<SecureUser> getAll(){
         return  userRepository.getAll().stream()
                 .map(User::getSecureUser)
