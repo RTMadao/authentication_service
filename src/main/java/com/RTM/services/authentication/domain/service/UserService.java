@@ -1,15 +1,13 @@
 package com.RTM.services.authentication.domain.service;
 
-import com.RTM.services.authentication.domain.model.SecureUser;
+import com.RTM.services.authentication.client.UserClient;
+import com.RTM.services.authentication.domain.exception.UserNotFoundException;
 import com.RTM.services.authentication.domain.model.User;
-import com.RTM.services.authentication.domain.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Service
 public class UserService {
@@ -17,45 +15,23 @@ public class UserService {
     @Autowired
     private BCryptPasswordEncoder passwordEncoder;
     @Autowired
-    private UserRepository userRepository;
+    private UserClient userClient;
 
     public String encodeUserPassword(String pass) {
         return passwordEncoder.encode(pass);
     }
 
-    public List<SecureUser> getAll(){
-        return  userRepository.getAll().stream()
-                .map(User::getSecureUser)
-                .collect(Collectors.toList());
+    public Boolean matchUserPassword(int userId, String testPassword) throws UserNotFoundException {
+        ResponseEntity<User> response = userClient.getFullUser(userId);
+        if (response.getStatusCode().is2xxSuccessful()) return passwordEncoder.matches(testPassword, response.getBody().getPassword());
+        else throw new UserNotFoundException("Usuario No encontrado");
     }
 
     public Optional<User> getUserById(int userId){
-        return userRepository.getUserById(userId);
+        return Optional.of(userClient.getFullUser(userId).getBody());
     }
 
     public User getUserByUsername(String username){
-        return userRepository.getUserByUsername(username);
-    }
-
-    public User newUser(User user){
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
-        return userRepository.save(user);
-    }
-
-    public boolean updateUser(User user){
-        if (userRepository.userExist(user.getId())){
-            user.setPassword(passwordEncoder.encode(user.getPassword()));
-            userRepository.save(user);
-            return true;
-        }
-        else return false;
-    }
-
-    public boolean delete( int userId){
-        if (userRepository.userExist(userId)){
-            userRepository.delete(userId);
-            return true;
-        }
-        else return false;
+        return userClient.getFullUserByusername(username).getBody();
     }
 }

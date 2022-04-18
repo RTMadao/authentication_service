@@ -9,13 +9,17 @@ public class User {
     private String password;
     private String name;
     private Set access;
+    private boolean isActive;
 
-    public User(int id, String username, String password, String name, Set access) {
+    private String email;
+
+    public User(int id, String username, String password, String name, Set access, boolean isActive) {
         this.id = id;
         this.username = username;
         this.password = password;
         this.name = name;
         this.access = access;
+        this.isActive = isActive;
     }
 
     public int getId() {
@@ -50,7 +54,7 @@ public class User {
         this.name = name;
     }
 
-    public SecureUser getSecureUser(){return new SecureUser(this.id, this.username, this.name, this.access);}
+    public SecureUser getSecureUser(){return new SecureUser(this.id, this.username, this.name, this.access, this.isActive);}
 
     public Set getAccess() {
         return access;
@@ -58,5 +62,13 @@ public class User {
 
     public void setAccess(Set access) {
         this.access = access;
+    }
+
+    public boolean isActive() {
+        return isActive;
+    }
+
+    public void setActive(boolean active) {
+        isActive = active;
     }
 }

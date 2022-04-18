@@ -1,6 +1,6 @@
 package com.RTM.services.authentication.domain.service;
 
-import com.RTM.services.authentication.domain.repository.UserRepository;
+import com.RTM.services.authentication.client.UserClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,11 +13,11 @@ import java.util.ArrayList;
 public class UserDetailsService implements org.springframework.security.core.userdetails.UserDetailsService {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserClient userClient;
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        com.RTM.services.authentication.domain.model.User user = userRepository.getUserByUsername(username);
+        com.RTM.services.authentication.domain.model.User user = userClient.getFullUserByusername(username).getBody();
         return new User(user.getUsername(), user.getPassword(), new ArrayList<>());
     }
 }

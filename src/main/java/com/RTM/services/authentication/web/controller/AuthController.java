@@ -43,12 +43,13 @@ public class AuthController {
             return new ResponseEntity<>(response, HttpStatus.OK);
         }
         catch (AuthenticationException e) {
+            System.out.println(e);
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
     }
 
-    @GetMapping("/user/authorization")
-    public ResponseEntity<?> getUserAuthorization(){
+    @GetMapping("/authorization")
+    public ResponseEntity<?> getAuthorization(){
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }
