@@ -1,6 +1,6 @@
 FROM openjdk:11-jre-slim
 
-COPY build/libs/authentication-0.0.1-SNAPSHOT.jar home/spring/salcedo_fawcett/authentication_service.jar
+COPY build/libs/authentication-1.0.0-SNAPSHOT.jar home/spring/salcedo_fawcett/authentication_service.jar
 EXPOSE 3002
 
 # Add docker-compose-wait tool -------------------
